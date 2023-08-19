@@ -1,0 +1,4 @@
+tgcrypto 
+pyrofork==2.2.9 
+psutill 
+pykeyboard

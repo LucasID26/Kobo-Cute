@@ -1,0 +1,16 @@
+import os
+import importlib
+
+path_f = "Yoi/module"
+file_list = os.listdir(path)
+p_file = [file for file in file_list if file.endswith(".py")]
+
+# Loop untuk mengimpor modul dan fungsi
+for file in p_file:
+    module_name = file[:-3]
+    module = importlib.import_module(f"{path}.{module_name}")
+    func_name = module_name  # Anggap nama modul = nama fungsi
+    
+    # Cetak hasil fungsi yang dipanggil
+    result = getattr(module, func_name)()
+    print(f"Hasil dari {func_name}:", result)
