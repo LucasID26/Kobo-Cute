@@ -1,10 +1,10 @@
-from config import * 
 from flask import Flask 
 from threading import Thread 
-from pyrogram import idle
 import asyncio
 import traceback
 import random
+import os 
+
 
 flask_app = Flask(__name__) 
 
@@ -20,14 +20,17 @@ def run_flask():
 def run_thread():
   Thread(target=run_flask).start() 
 
+
 async def run_all():
-  import Kobo 
-  os.system("pip3 install -r requirements.txt")
+  os.system("pip install -r requirements.txt")
   os.system("clear")
-  await bot.start()
+  import Kobo 
+  from pyrogram import idle 
+  import config
+  await config.bot.start()
   run_thread()
   await idle()
-  await bot.stop()
+  await config.bot.stop()
 
 loop = asyncio.get_event_loop()
 if __name__ == "__main__":

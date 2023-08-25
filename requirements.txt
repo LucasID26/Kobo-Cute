@@ -1,4 +1,9 @@
 tgcrypto 
-pyrofork==2.2.9 
-psutill 
+pyrofork==2.2.6 
+psutil 
 pykeyboard
+pytz 
+bs4
+deep-translator==1.8.3
+aiohttp
+httpx[http2]
