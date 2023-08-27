@@ -65,7 +65,8 @@ async def command_text(client,m):
     await alive.PING(client,m)
   elif cmd(['system'],text):
     await alive.SYSTEM(client,m)
-  #BARD
-  #elif cmd(["apa","bagaimana","mengapa","kapan","dimana","siapa","berapa","apakah","bagaimanakah","mengapakah","kapanlah","dimanakah","siapakah","berapakah","arti","maksud","contoh","jawaban","carikan"],text):
+  #DOWNLOAD
+  elif cmd(['download','tolong download','dl'],text):
+    await download.DOWNLOAD(client,m)
   else:
     await bard.AI(client,m)

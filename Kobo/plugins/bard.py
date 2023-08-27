@@ -8,7 +8,7 @@ import asyncio
 from pyrogram import filters,enums
 from Kobo.decorators.decorator import error,info_cmd
 
-from Kobo.tools import get
+from Kobo.tools import httpy
 
 
 headers = {
@@ -28,14 +28,13 @@ async def AI(client,m):
     except:
       msg = await m.reply("<code>Hmm mengganti kepintaran otomatis...</code>")
       await GPT(teks2[1],msg)
-  except:
+  except Exception as e:
     msg2 = "Ahh kobo tidak tau harus ngapain","Auu ahh nyuruh yang bener 😠","Sedang mengalami gangguan silahkan coba lain kali!","au ah kobo lagi mager","gamau!","dih lu siapa nyuruh²","bodo amat!"
-    await m.reply(random.choice(msg2))
+    await msg.edit(random.choice(msg2))
 
 
 async def BARD(input,m):
-  await bot.send_chat_action(m.chat.id,enums.ChatAction.TYPING)
-  req = await get(f"http://api.safone.me/bard?message={input}",headers=headers)
+  req = await httpy.get(f"http://api.safone.me/bard?message={input}")
   content = req['message']
   img = req['extras'][0]['images']
   if len(img) != 0:
@@ -58,9 +57,8 @@ async def BARD(input,m):
       await m.reply(content)
     
 async def GPT(input,msg):
-  await msg.edit("<code>Mencoba berfikir kembali...</code>") 
-  await bot.send_chat_action(m.chat.id,enums.ChatAction.TYPING)
-  req = await get(f"https://api.akuari.my.id/ai/gpt?chat={input}",headers=headers)
+  await msg.edit("<code>Mencoba berfikir kembali...</code>")   
+  req = await httpy.get(f"https://api.akuari.my.id/ai/gpt?chat={input}")
   content = req['respon']
   max = 4096
   if len(content) > max:

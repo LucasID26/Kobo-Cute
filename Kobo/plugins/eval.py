@@ -104,11 +104,11 @@ async def shell_exec(code, treat=True):
     return stdout, process
 
 @bot.on_callback_query(filters.create(lambda _, __, query: "delete#" in query.data))
-async def eval_call(client,call):
+async def eval_call(_, callback_query):
   try:
-    if call.from_user.id != int(call.data.split("#")[1]):
-      return await call.answer("Bukan buat lu..!",True) 
-    return await call.message.delete()
-  except:
-    return await call.answer("Callback timeout")
-
+    if callback_query.from_user.id != int(callback_query.data.split("#")[1]):
+      await callback_query.answer("Bukan buat lu..!", show_alert=True)
+    else:
+      await callback_query.message.delete()
+  except Exception as e:
+    await callback_query.answer("Terjadi kesalahan: " + str(e), show_alert=True)
