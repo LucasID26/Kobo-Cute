@@ -22,15 +22,19 @@ def run_thread():
 
 
 async def run_all():
-  os.system("pip install -r requirements.txt")
-  os.system("clear")
-  import Kobo 
+  #os.system("pip install -r requirements.txt")
+  #os.system("clear")
+  import Kobo
+  from Kobo.plugins.restart import restarting
   from pyrogram import idle 
   import config
   await config.bot.start()
+  await config.user.start()
   run_thread()
+  await restarting()
   await idle()
   await config.bot.stop()
+  await config.user.stop()
 
 loop = asyncio.get_event_loop()
 if __name__ == "__main__":
@@ -43,4 +47,3 @@ if __name__ == "__main__":
     print(err)
   finally:
     loop.stop()
-    

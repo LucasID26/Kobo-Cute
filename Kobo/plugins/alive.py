@@ -6,21 +6,15 @@ import requests
 import os
 import platform
 import psutil
-
+import shutil
+from Kobo.tools import size
+import cpuinfo
+from Kobo.tools import duration
 from Kobo.decorators.decorator import info_cmd
 
 
 
-TIME_DURATION_UNITS = ( ('minggu', 60 * 60 * 24 * 7), ('hari', 60 * 60 * 24), ('jam', 60 * 60), ('menit', 60), ('detik', 1))
-def duration(seconds):
-  if seconds == 0:
-    return 'Baru aja off'
-  parts = []
-  for unit, div in TIME_DURATION_UNITS:
-    amount, seconds = divmod(int(seconds), div)
-    if amount > 0:
-      parts.append('{} {}{}' .format(amount, unit, "" if amount == 1 else ""))
-  return ', '.join(parts) 
+
 
 
 
@@ -45,13 +39,13 @@ async def PING(client, m):
 ❏ **PONG!!🏓**
 ├• **Pinger** ➥ `{p_result}`
 ├• **Server** ➥ `{ping_server()}` 
-├• **Uptime** ➥ `{uptime}` 
-└• **OWNER**  ➥ @PanggilYoi
+├• **Owner** ➥ [YOI](https://profile.kulukgalak.repl.co/)
+└• **UPtime**  ➥ `{uptime}`
 <a href='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz5q_KcP8RQbDQPciRoBSlwKMyBHAKMNN-pg&amp;usqp=CAU'>⁠</a>
 """)
 
 def ping_server():
-  url = "https://yoi-asisstant.kulukgalak.repl.co/"
+  url = "https://profile.kulukgalak.repl.co/"
   start = time.time()
   response = requests.get(url, timeout=5) 
   end = time.time()
@@ -65,39 +59,73 @@ def ping_server():
 
 @info_cmd
 async def SYSTEM(client,m):
-  await m.reply(cek_system())
+  msg = await m.reply("<code>Sedang mengumpulkan data system. . .</code>")
+  await msg.edit(cek_system())
 
 def cek_system():
   try:
     #PLATFORM
     system = platform.uname()
     sistem = system.system
-    versi = system.version
+    kernel = system.release
     mesin = system.machine
+    cpu_info = cpuinfo.get_cpu_info()['brand_raw']
     p_implementasi = platform.python_implementation()
     bit = platform.architecture()
     python_v = platform.python_version()
     uptime = duration((datetime.utcnow() - starttime).total_seconds())
    
     #DISK
-    cpu = psutil.cpu_percent(interval=0.5)
-    mem = psutil.virtual_memory().percent
-    disk = psutil.disk_usage("/").percent
+    percent_disk = psutil.disk_usage(".").percent
+    total, used, free = shutil.disk_usage(".")
+    total_disk = size(total)
+    used_disk = size(used)
+    free_disk = size(free)
+    process = psutil.Process(os.getpid())
+    bot_usage = f"{round(process.memory_info()[0]/1024 ** 2)} MB"
+    upload = size(psutil.net_io_counters().bytes_sent)
+    download = size(psutil.net_io_counters().bytes_recv)
+
+    
+    #RAM
+    percent_ram = psutil.virtual_memory().percent
+    total_ram = size(psutil.virtual_memory().total)
+    used_ram = size(psutil.virtual_memory().used)
+    
+    #CPU
+    cpu_percentage = psutil.cpu_percent()
+    cpu_counts = psutil.cpu_count()
+    
     msg = f"""
-❏ **SYSTEM ⚙**
+**CPU** ( {cpu_counts} core / {cpu_percentage}% )
+
+❏ **SYSTEM**
 ├• **System** ➥ `{sistem}`
-├• **Version** ➥ `{versi.split("#",1)[1].split("Sun",1)[0]}`
+├• **Kernel** ➥ `{kernel}`
+├• **CPU** ➥ `{cpu_info}`
 ├• **Machine** ➥ `{mesin}`
-├• **Py_Implemenation** ➥ `{p_implementasi}`
+├• **Py_Implementation** ➥ `{p_implementasi}`
 ├• **BIT** ➥ `{bit[0]}`|`{bit[1]}`
 ├• **Python Version** ➥ `{python_v}`
-├• **Pyro** ➥ `{__version__}`
-└• **Uptime** ➥ `{uptime}`
+└• **Pyro** ➥ `{__version__}`
 
-❏ **DISK 💾**
-├• **CPU** ➥ `{cpu}%`
-├• **RAM** ➥ `{mem}%`
-└• **DISK** ➥ `{disk}%`
+❏ **DISK**
+├• **Percent** ➥ `{percent_disk}%`
+├• **Total** ➥ `{total_disk}`
+├• **Used** ➥ `{used_disk}`
+├• **Bot Usage** ➥ `{bot_usage}`
+├• **Upload** ➥ `{upload}`
+├• **Download** ➥ `{download}`
+└• **Free** ➥ `{free_disk}`
+
+❏ **RAM**
+├• **Percent** ➥ `{percent_ram}%`
+├• **Total** ➥ `{total_ram}`
+└• **Used** ➥ `{used_ram}`
+
+
+
+<b>UPTIME:</b> {uptime}
 """
     return msg
   except Exception as e:

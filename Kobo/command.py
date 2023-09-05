@@ -1,5 +1,5 @@
 from pyrogram import filters 
-from config import bot
+from config import bot,own
 import random
 from Kobo.plugins import *
 
@@ -68,5 +68,6 @@ async def command_text(client,m):
   #DOWNLOAD
   elif cmd(['download','tolong download','dl'],text):
     await download.DOWNLOAD(client,m)
+    
   else:
     await bard.AI(client,m)
