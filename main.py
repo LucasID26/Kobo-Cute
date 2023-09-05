@@ -29,12 +29,10 @@ async def run_all():
   from pyrogram import idle 
   import config
   await config.bot.start()
-  await config.user.start()
   run_thread()
   await restarting()
   await idle()
   await config.bot.stop()
-  await config.user.stop()
 
 loop = asyncio.get_event_loop()
 if __name__ == "__main__":

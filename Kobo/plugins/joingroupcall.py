@@ -5,7 +5,7 @@ from pyrogram import raw
 
 from pyrogram import filters
 
-@user.on_message(filters.command('joinvc') & filters.user(own))
+@user.on_message(filters.command('joinvc') & filters.user(own) & filters.me, '')
 async def joinvc(client, m):
   msg = await m.reply("Proccessing. . .")
   try:
